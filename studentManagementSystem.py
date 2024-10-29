@@ -91,35 +91,6 @@ class StudentManagementSystem:
         else:
             print("Error: Course code not found.")
 
-    def save_data(self, filename):
-        data = {
-            "students": {sid: {"name": s.name, "age": s.age, "address": s.address, "grades": s.grades, "courses": s.courses} for sid, s in self.students.items()},
-            "courses": {cc: {"course_name": c.course_name, "instructor": c.instructor, "students": [s.student_id for s in c.students]} for cc, c in self.courses.items()}
-        }
-        with open(filename, 'w') as f:
-            json.dump(data, f)
-        print("All student and course data saved successfully.")
-
-    def load_data(self, filename):
-        try:
-            with open(filename, 'r') as f:
-                data = json.load(f)
-                for sid, info in data['students'].items():
-                    student = Student(info['name'], info['age'], info['address'], sid)
-                    student.grades = info['grades']
-                    student.courses = info['courses']
-                    self.students[sid] = student
-                for cc, info in data['courses'].items():
-                    course = Course(info['course_name'], cc, info['instructor'])
-                    self.courses[cc] = course
-                    for sid in info['students']:
-                        if sid in self.students:
-                            course.add_student(self.students[sid])
-                print("Data loaded successfully.")
-        except FileNotFoundError:
-            print("Error: File not found.")
-
-
 def main():
     sms = StudentManagementSystem()
 
@@ -131,8 +102,6 @@ def main():
         print("4. Add Grade for Student")
         print("5. Display Student Details")
         print("6. Display Course Details")
-        print("7. Save Data to File")
-        print("8. Load Data from File")
         print("0. Exit")
 
         choice = input("Select Option: ")
@@ -169,14 +138,7 @@ def main():
             course_code = input("Enter Course Code: ")
             sms.display_course_details(course_code)
 
-        elif choice == "7":
-            filename = input("Enter filename to save data: ")
-            sms.save_data(filename)
-
-        elif choice == "8":
-            filename = input("Enter filename to load data: ")
-            sms.load_data(filename)
-
+        
         elif choice == "0":
             print("Exiting the program.")
             break
